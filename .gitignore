@@ -1,0 +1,24 @@
+# Virtual environments
+venv/
+env/
+.venv/
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Output
+*.csv
+*.log
+*.json
+output/
+results/
