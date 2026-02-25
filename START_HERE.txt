@@ -1,6 +1,6 @@
 # GCP Visualizer TUIs
 
-This is an isolated, standalone project containing CSV visualization and inspection tools.
+This is an isolated, standalone project containing CSV and Parquet visualization and inspection tools.
 
 **Extract this ZIP file and see QUICK_START.md for instructions.**
 
@@ -16,10 +16,10 @@ This is an isolated, standalone project containing CSV visualization and inspect
 
 1. Extract ZIP file
 2. Open terminal in the extracted folder
-3. Create virtual environment: `python -m venv venv`
-4. Activate: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Linux/Mac)
-5. Install: `pip install -r requirements.txt`
-6. Run: `python visualizers/lazy_frame_viewer.py --file YOUR_CSV_FILE.csv`
+3. Create virtual environment: `uv venv`
+4. Activate: `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` (Linux/Mac)
+5. Install: `uv pip install -r requirements.txt`
+6. Run: `python visualizers/lazy_frame_viewer.py --file YOUR_FILE.csv` (or .parquet)
 
 For detailed instructions, see **SETUP.md**
 

@@ -1,0 +1,51 @@
+# Pipeline Configuration — Smart Meter Communication Consolidation
+# See docs/prd/PRD_smart_meter_pipeline_v1.0.0.md for full specification
+
+# Target month for processing (YYYY-MM)
+target_month: "2026-01"
+
+# Number of look-back days for the moving window OR rule
+moving_window_days: 5
+
+# Maximum concurrent sink operations
+sink_queue_limit: 3
+
+# Memory threshold (% of total RAM) — abort safely if exceeded
+memory_threshold_percent: 70
+
+# Output format: parquet or csv
+output_format: parquet
+
+# --- Paths ---
+
+paths:
+  # Raw ORCA communication data
+  orca_raw: "data/raw/ORCA/Dados_Comunicacao.parquet"
+
+  # Refined SANPLAT communication data
+  sanplat_refined: "data/refined/SANPLAT/Dados_Comunicacao_SANPLAT.csv"
+
+  # Reference date files
+  orca_ref_date: "data/trusted/CIS/Data_Referencia.csv"
+  sanplat_ref_date: "data/trusted/SANPLAT/Data_Referencia_2.csv"
+
+  # Enriched (with date header) files
+  orca_enriched: "data/trusted/ORCA/Dados_Comunicacao_com_datas.csv"
+  sanplat_enriched: "data/trusted/SANPLAT/Dados_Comunicacao_SANPLAT_com_datas.csv"
+
+  # Diario directory (files named Diario_YYYY-MM-DD.parquet)
+  diario_dir: "D:/dados/Diario"
+
+  # Output directories
+  mixed_output: "data/trusted/mixed"
+  municipio_daily_output: "data/trusted/municipio_daily"
+
+# --- ORCA binarization ---
+# Convert all non-zero ORCA values to 1 before processing
+orca_binarize: true
+
+# --- Retry settings ---
+sink_retry_attempts: 3
+
+# --- Logging ---
+log_level: "INFO"
