@@ -13,6 +13,7 @@ Supports two modes:
 
 import logging
 import threading
+from io import TextIOWrapper
 from pathlib import Path
 from typing import Optional
 
@@ -49,7 +50,7 @@ class SinkManager:
 
         # Stream-mode state
         self._stream_path: Optional[Path] = None
-        self._stream_file = None          # TextIO handle
+        self._stream_file: Optional[TextIOWrapper] = None
         self._header_written: bool = False
         self._stream_rows: int = 0
 
@@ -179,16 +180,19 @@ class SinkManager:
 
         csv_text: str = df.write_csv()
 
+        fh = self._stream_file
+        assert fh is not None, "Stream file not open"
+
         with self._lock:
             if not self._header_written:
-                self._stream_file.write(csv_text)
+                fh.write(csv_text)
                 self._header_written = True
             else:
                 # Skip the first line (column names)
                 first_nl = csv_text.index("\n")
-                self._stream_file.write(csv_text[first_nl + 1:])
+                fh.write(csv_text[first_nl + 1:])
 
-            self._stream_file.flush()
+            fh.flush()
             self._stream_rows += df.height
 
         logger.info("[OK] Appended %d rows to stream (%d total)", df.height, self._stream_rows)

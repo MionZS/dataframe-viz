@@ -2,11 +2,15 @@
 
 Reads config/pipeline.yaml and executes the full pipeline:
 
-    For each date D in [target_month - 5d .. end of target_month]:
-        1. Compute DISP(D) via moving window (ORCA + SANPLAT)
-        2. Join with Diario to add MUNICIPIO
-        3. Group by [MUNICIPIO, ORIGEM]
-        4. Sink partitioned output via SinkManager
+    Phase 1 — Enrichment:
+        1a. Enrich ORCA raw data with absolute date column headers
+        1b. Enrich SANPLAT refined data with absolute date column headers
+
+    Phase 2 — Daily processing (for each date D in the target month):
+        2a. Compute DISP(D) via moving window (ORCA + SANPLAT)
+        2b. Join with Diario to add MUNICIPIO
+        2c. Group by [MUNICIPIO, ORIGEM]
+        2d. Sink to single stream file via SinkManager
 
 See docs/prd/PRD_smart_meter_pipeline_v1.0.0.md for specification.
 """
@@ -22,6 +26,7 @@ from typing import Any, Dict, List
 import polars as pl
 import yaml
 
+from src.enrich_dates import process_orca, process_sanplat
 from src.join_daily import join_with_diario
 from src.memory_monitor import MemoryMonitor
 from src.moving_window import compute_disp
@@ -55,6 +60,61 @@ def load_config(config_path: str = DEFAULT_CONFIG) -> Dict[str, Any]:
             sys.exit(1)
 
     return cfg
+
+
+# ------------------------------------------------------------------
+# Enrichment phase
+# ------------------------------------------------------------------
+
+
+def _run_enrichment(cfg: Dict[str, Any]) -> None:
+    """Phase 1: enrich raw/refined data with absolute date headers.
+
+    Uses ``process_orca`` and ``process_sanplat`` from *enrich_dates*
+    to regenerate the enriched CSV files that the moving-window step
+    reads from.  Paths are taken from the pipeline config.
+    """
+    paths = cfg["paths"]
+    t0 = time.perf_counter()
+    logger.info("=" * 60)
+    logger.info("Phase 1: Enrichment — generating date-headed CSVs")
+
+    # --- ORCA ---
+    orca_raw = Path(paths["orca_raw"])
+    orca_ref = Path(paths["orca_ref_date"])
+    orca_out_dir = Path(paths["orca_enriched"]).parent
+
+    if orca_raw.exists() and orca_ref.exists():
+        logger.info("Enriching ORCA: %s", orca_raw)
+        orca_out_dir.mkdir(parents=True, exist_ok=True)
+        orca_enriched = process_orca(orca_raw, orca_ref, orca_out_dir)
+        logger.info("[OK] ORCA enriched → %s", orca_enriched)
+    else:
+        logger.warning(
+            "Skipping ORCA enrichment — missing file(s): raw=%s ref=%s",
+            orca_raw.exists(),
+            orca_ref.exists(),
+        )
+
+    # --- SANPLAT ---
+    sanplat_raw = Path(paths["sanplat_refined"])
+    sanplat_ref = Path(paths["sanplat_ref_date"])
+    sanplat_out_dir = Path(paths["sanplat_enriched"]).parent
+
+    if sanplat_raw.exists() and sanplat_ref.exists():
+        logger.info("Enriching SANPLAT: %s", sanplat_raw)
+        sanplat_out_dir.mkdir(parents=True, exist_ok=True)
+        sanplat_enriched = process_sanplat(sanplat_raw, sanplat_ref, sanplat_out_dir)
+        logger.info("[OK] SANPLAT enriched → %s", sanplat_enriched)
+    else:
+        logger.warning(
+            "Skipping SANPLAT enrichment — missing file(s): raw=%s ref=%s",
+            sanplat_raw.exists(),
+            sanplat_ref.exists(),
+        )
+
+    elapsed = time.perf_counter() - t0
+    logger.info("Enrichment phase complete in %.1fs", elapsed)
 
 
 # ------------------------------------------------------------------
@@ -251,6 +311,10 @@ def run(config_path: str = DEFAULT_CONFIG) -> None:
 
     cfg = load_config(config_path)
 
+    # --- Phase 1: Enrichment ---
+    _run_enrichment(cfg)
+
+    # --- Phase 2: Daily processing ---
     memory = MemoryMonitor(
         threshold_percent=cfg.get("memory_threshold_percent", 70)
     )
