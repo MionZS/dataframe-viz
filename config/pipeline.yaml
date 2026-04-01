@@ -36,6 +36,9 @@ paths:
   # Diario directory (files named Diario_YYYY-MM-DD.parquet)
   diario_dir: "D:/dados/Diario"
 
+  # MEDIDORES file (NIO, INTELIGENTE)
+  medidores: "data/refined/CIS/MEDIDORES.parquet"
+
   # Output directories
   mixed_output: "data/trusted/mixed"
   municipio_daily_output: "data/trusted/municipio_daily"

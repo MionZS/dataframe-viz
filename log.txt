@@ -1,0 +1,1012 @@
+10:37:04 [INFO] src.moving_window — DISP computed: 583889 meters, 545329 communicating
+10:37:04 [INFO] src.moving_window — Moving window for 2026-01-30: using 5 columns ['25/01/2026', '26/01/2026', '27/01/2026', '28/01/2026', '29/01/2026']
+10:37:04 [INFO] src.moving_window — DISP computed: 583889 meters, 547874 communicating
+10:37:04 [INFO] src.moving_window — Moving window for 2026-01-31: using 5 columns ['26/01/2026', '27/01/2026', '28/01/2026', '29/01/2026', '30/01/2026']
+10:37:04 [INFO] src.moving_window — DISP computed: 583889 meters, 547881 communicating
+10:37:12 [INFO] src.pipeline_orchestrator — [OK] SANPLAT DISP saved → data\trusted\SANPLAT\disp_2026-01.csv (18100559 rows)
+10:37:23 [INFO] src.pipeline_orchestrator — [OK] Mixed DISP saved → data\trusted\mixed\disp_2026-01.csv (62283371 rows)
+10:37:23 [INFO] src.pipeline_orchestrator — Moving window phase complete in 50.2s
+10:37:23 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:23 [INFO] src.pipeline_orchestrator — Phase 3: Join & Aggregate
+10:37:23 [INFO] src.memory_monitor — MemoryMonitor initialised: total_ram=24350MB threshold=70% (17045MB)
+10:37:23 [INFO] src.sink_manager — SinkManager ready: max_concurrent=3 format=parquet retries=3
+10:37:23 [INFO] src.sink_manager — Opened stream → data\trusted\municipio_daily\municipio_2026-01.csv
+10:37:23 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:23 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-01
+10:37:23 [INFO] src.memory_monitor — [start 2026-01-01] RSS=1747.5MB (7.2%)
+10:37:25 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-01.parquet
+10:37:26 [INFO] src.join_daily — Join result for 2026-01-01 [ORCA]: 1972133 rows (from 1425252 DISP × 1972133 Diario)
+10:37:26 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-01.parquet
+10:37:27 [INFO] src.join_daily — Join result for 2026-01-01 [SANPLAT]: 1972133 rows (from 583889 DISP × 1972133 Diario)
+10:37:27 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:27 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:28 [INFO] src.join_daily — MEDIDORES join: 3944266 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2579752
+        1224036
+        63204
+        39980
+        13270
+]}
+10:37:28 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-01: 1435 groups, comm=1741056, total=3944266
+10:37:28 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:28 [INFO] src.memory_monitor — Memory check: RSS=1717.3MB (7.1%)
+10:37:28 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (1435 total)
+10:37:28 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:28 [INFO] src.memory_monitor — [end 2026-01-01] RSS=1710.2MB (7.0%)
+10:37:28 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:28 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-02
+10:37:28 [INFO] src.memory_monitor — [start 2026-01-02] RSS=1710.2MB (7.0%)
+10:37:30 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-02.parquet
+10:37:30 [INFO] src.join_daily — Join result for 2026-01-02 [ORCA]: 1972211 rows (from 1425252 DISP × 1972211 Diario)
+10:37:30 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-02.parquet
+10:37:31 [INFO] src.join_daily — Join result for 2026-01-02 [SANPLAT]: 1972211 rows (from 583889 DISP × 1972211 Diario)
+10:37:31 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:31 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:31 [INFO] src.join_daily — MEDIDORES join: 3944422 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2579922
+        1224182
+        63204
+        39974
+        13114
+]}
+10:37:32 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-02: 1435 groups, comm=1741216, total=3944422
+10:37:32 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:32 [INFO] src.memory_monitor — Memory check: RSS=1790.0MB (7.4%)
+10:37:32 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (2870 total)
+10:37:32 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:32 [INFO] src.memory_monitor — [end 2026-01-02] RSS=1771.9MB (7.3%)
+10:37:32 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:32 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-03
+10:37:32 [INFO] src.memory_monitor — [start 2026-01-03] RSS=1771.9MB (7.3%)
+10:37:33 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-03.parquet
+10:37:34 [INFO] src.join_daily — Join result for 2026-01-03 [ORCA]: 1972218 rows (from 1425252 DISP × 1972218 Diario)
+10:37:34 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-03.parquet
+10:37:34 [INFO] src.join_daily — Join result for 2026-01-03 [SANPLAT]: 1972218 rows (from 583889 DISP × 1972218 Diario)
+10:37:34 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:34 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:35 [INFO] src.join_daily — MEDIDORES join: 3944436 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2579956
+        1224234
+        63204
+        39968
+        13048
+]}
+10:37:35 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-03: 1435 groups, comm=1738911, total=3944436
+10:37:35 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:35 [INFO] src.memory_monitor — Memory check: RSS=1852.1MB (7.6%)
+10:37:35 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (4305 total)
+10:37:35 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:35 [INFO] src.memory_monitor — [end 2026-01-03] RSS=1852.0MB (7.6%)
+10:37:35 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:35 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-04
+10:37:35 [INFO] src.memory_monitor — [start 2026-01-04] RSS=1852.0MB (7.6%)
+10:37:36 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-04.parquet
+10:37:37 [INFO] src.join_daily — Join result for 2026-01-04 [ORCA]: 1972219 rows (from 1425252 DISP × 1972219 Diario)
+10:37:37 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-04.parquet
+10:37:37 [INFO] src.join_daily — Join result for 2026-01-04 [SANPLAT]: 1972219 rows (from 583889 DISP × 1972219 Diario)
+10:37:37 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:37 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:38 [INFO] src.join_daily — MEDIDORES join: 3944438 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2579964
+        1224246
+        63204
+        39966
+        13032
+]}
+10:37:38 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-04: 1435 groups, comm=1739528, total=3944438
+10:37:38 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:38 [INFO] src.memory_monitor — Memory check: RSS=1862.6MB (7.6%)
+10:37:38 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (5740 total)
+10:37:38 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:38 [INFO] src.memory_monitor — [end 2026-01-04] RSS=1860.9MB (7.6%)
+10:37:38 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:38 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-05
+10:37:38 [INFO] src.memory_monitor — [start 2026-01-05] RSS=1860.9MB (7.6%)
+10:37:40 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-05.parquet
+10:37:40 [INFO] src.join_daily — Join result for 2026-01-05 [ORCA]: 1972310 rows (from 1425252 DISP × 1972310 Diario)
+10:37:40 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-05.parquet
+10:37:40 [INFO] src.join_daily — Join result for 2026-01-05 [SANPLAT]: 1972310 rows (from 583889 DISP × 1972310 Diario)
+10:37:40 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:40 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:41 [INFO] src.join_daily — MEDIDORES join: 3944620 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2580194
+        1224412
+        63204
+        39952
+        12820
+]}
+10:37:41 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-05: 1435 groups, comm=1739822, total=3944620
+10:37:41 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:41 [INFO] src.memory_monitor — Memory check: RSS=1869.5MB (7.7%)
+10:37:41 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (7175 total)
+10:37:41 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:41 [INFO] src.memory_monitor — [end 2026-01-05] RSS=1864.8MB (7.7%)
+10:37:41 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:41 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-06
+10:37:41 [INFO] src.memory_monitor — [start 2026-01-06] RSS=1864.8MB (7.7%)
+10:37:43 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-06.parquet
+10:37:43 [INFO] src.join_daily — Join result for 2026-01-06 [SANPLAT]: 1972462 rows (from 583889 DISP × 1972462 Diario)
+10:37:43 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-06.parquet
+10:37:44 [INFO] src.join_daily — Join result for 2026-01-06 [ORCA]: 1972462 rows (from 1425252 DISP × 1972462 Diario)
+10:37:44 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:44 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:45 [INFO] src.join_daily — MEDIDORES join: 3944924 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2580538
+        1224716
+        63204
+        39942
+        12480
+]}
+10:37:45 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-06: 1435 groups, comm=1740307, total=3944924
+10:37:45 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:45 [INFO] src.memory_monitor — Memory check: RSS=1881.2MB (7.7%)
+10:37:45 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (8610 total)
+10:37:45 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:45 [INFO] src.memory_monitor — [end 2026-01-06] RSS=1859.3MB (7.6%)
+10:37:45 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:45 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-07
+10:37:45 [INFO] src.memory_monitor — [start 2026-01-07] RSS=1859.3MB (7.6%)
+10:37:46 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-07.parquet
+10:37:47 [INFO] src.join_daily — Join result for 2026-01-07 [ORCA]: 1972596 rows (from 1425252 DISP × 1972596 Diario)
+10:37:47 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-07.parquet
+10:37:47 [INFO] src.join_daily — Join result for 2026-01-07 [SANPLAT]: 1972596 rows (from 583889 DISP × 1972596 Diario)
+10:37:47 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:47 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:48 [INFO] src.join_daily — MEDIDORES join: 3945192 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2580876
+        1224980
+        63204
+        39926
+        12146
+]}
+10:37:48 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-07: 1435 groups, comm=1743075, total=3945192
+10:37:48 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:48 [INFO] src.memory_monitor — Memory check: RSS=1830.1MB (7.5%)
+10:37:48 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (10045 total)
+10:37:48 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:48 [INFO] src.memory_monitor — [end 2026-01-07] RSS=1828.4MB (7.5%)
+10:37:48 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:48 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-08
+10:37:48 [INFO] src.memory_monitor — [start 2026-01-08] RSS=1828.4MB (7.5%)
+10:37:49 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-08.parquet
+10:37:50 [INFO] src.join_daily — Join result for 2026-01-08 [SANPLAT]: 1972732 rows (from 583889 DISP × 1972732 Diario)
+10:37:50 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-08.parquet
+10:37:50 [INFO] src.join_daily — Join result for 2026-01-08 [ORCA]: 1972732 rows (from 1425252 DISP × 1972732 Diario)
+10:37:50 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:50 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:51 [INFO] src.join_daily — MEDIDORES join: 3945464 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581182
+        1225328
+        63204
+        39918
+        11768
+]}
+10:37:51 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-08: 1435 groups, comm=1742595, total=3945464
+10:37:51 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:51 [INFO] src.memory_monitor — Memory check: RSS=1794.0MB (7.4%)
+10:37:51 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (11480 total)
+10:37:51 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:51 [INFO] src.memory_monitor — [end 2026-01-08] RSS=1787.7MB (7.3%)
+10:37:51 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:51 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-09
+10:37:51 [INFO] src.memory_monitor — [start 2026-01-09] RSS=1787.7MB (7.3%)
+10:37:53 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-09.parquet
+10:37:53 [INFO] src.join_daily — Join result for 2026-01-09 [ORCA]: 1972847 rows (from 1425252 DISP × 1972847 Diario)
+10:37:53 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-09.parquet
+10:37:53 [INFO] src.join_daily — Join result for 2026-01-09 [SANPLAT]: 1972847 rows (from 583889 DISP × 1972847 Diario)
+10:37:53 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:53 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:54 [INFO] src.join_daily — MEDIDORES join: 3945694 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581486
+        1225628
+        63204
+        39910
+        11384
+]}
+10:37:54 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-09: 1435 groups, comm=1742342, total=3945694
+10:37:54 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:54 [INFO] src.memory_monitor — Memory check: RSS=1815.2MB (7.5%)
+10:37:54 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (12915 total)
+10:37:54 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:54 [INFO] src.memory_monitor — [end 2026-01-09] RSS=1815.2MB (7.5%)
+10:37:54 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:54 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-10
+10:37:54 [INFO] src.memory_monitor — [start 2026-01-10] RSS=1815.2MB (7.5%)
+10:37:56 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-10.parquet
+10:37:56 [INFO] src.join_daily — Join result for 2026-01-10 [SANPLAT]: 1972847 rows (from 583889 DISP × 1972847 Diario)
+10:37:56 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-10.parquet
+10:37:57 [INFO] src.join_daily — Join result for 2026-01-10 [ORCA]: 1972847 rows (from 1425252 DISP × 1972847 Diario)
+10:37:57 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:37:57 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:37:57 [INFO] src.join_daily — MEDIDORES join: 3945694 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581526
+        1225654
+        63204
+        39908
+        11320
+]}
+10:37:57 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-10: 1435 groups, comm=1742393, total=3945694
+10:37:57 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:37:57 [INFO] src.memory_monitor — Memory check: RSS=1844.6MB (7.6%)
+10:37:57 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (14350 total)
+10:37:57 [INFO] src.sink_manager — Sink slot released (0 active)
+10:37:57 [INFO] src.memory_monitor — [end 2026-01-10] RSS=1843.0MB (7.6%)
+10:37:57 [INFO] src.pipeline_orchestrator — ============================================================
+10:37:57 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-11
+10:37:57 [INFO] src.memory_monitor — [start 2026-01-11] RSS=1843.0MB (7.6%)
+10:37:59 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-11.parquet
+10:38:00 [INFO] src.join_daily — Join result for 2026-01-11 [ORCA]: 1972868 rows (from 1425252 DISP × 1972868 Diario)
+10:38:00 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-11.parquet
+10:38:00 [INFO] src.join_daily — Join result for 2026-01-11 [SANPLAT]: 1972868 rows (from 583889 DISP × 1972868 Diario)
+10:38:00 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:00 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:01 [INFO] src.join_daily — MEDIDORES join: 3945736 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581558
+        1225684
+        63204
+        39898
+        11298
+]}
+10:38:01 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-11: 1435 groups, comm=1742626, total=3945736
+10:38:01 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:01 [INFO] src.memory_monitor — Memory check: RSS=1870.2MB (7.7%)
+10:38:01 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (15785 total)
+10:38:01 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:01 [INFO] src.memory_monitor — [end 2026-01-11] RSS=1868.9MB (7.7%)
+10:38:01 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:01 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-12
+10:38:01 [INFO] src.memory_monitor — [start 2026-01-12] RSS=1868.9MB (7.7%)
+10:38:02 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-12.parquet
+10:38:03 [INFO] src.join_daily — Join result for 2026-01-12 [SANPLAT]: 1972960 rows (from 583889 DISP × 1972960 Diario)
+10:38:03 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-12.parquet
+10:38:03 [INFO] src.join_daily — Join result for 2026-01-12 [ORCA]: 1972960 rows (from 1425252 DISP × 1972960 Diario)
+10:38:03 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:03 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:04 [INFO] src.join_daily — MEDIDORES join: 3945920 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "Inteligente Sem informação"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581758
+        1225830
+        63204
+        39878
+        11138
+]}
+10:38:04 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-12: 1435 groups, comm=1742357, total=3945920
+10:38:04 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:04 [INFO] src.memory_monitor — Memory check: RSS=1856.9MB (7.6%)
+10:38:04 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (17220 total)
+10:38:04 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:04 [INFO] src.memory_monitor — [end 2026-01-12] RSS=1855.5MB (7.6%)
+10:38:04 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:04 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-13
+10:38:04 [INFO] src.memory_monitor — [start 2026-01-13] RSS=1855.5MB (7.6%)
+10:38:05 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-13.parquet
+10:38:06 [INFO] src.join_daily — Join result for 2026-01-13 [ORCA]: 1973058 rows (from 1425252 DISP × 1973058 Diario)
+10:38:06 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-13.parquet
+10:38:06 [INFO] src.join_daily — Join result for 2026-01-13 [SANPLAT]: 1973058 rows (from 583889 DISP × 1973058 Diario)
+10:38:06 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:06 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:07 [INFO] src.join_daily — MEDIDORES join: 3946116 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2581962
+        1226122
+        63204
+        39860
+        11052
+]}
+10:38:07 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-13: 1435 groups, comm=1748500, total=3946116
+10:38:07 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:07 [INFO] src.memory_monitor — Memory check: RSS=1878.0MB (7.7%)
+10:38:07 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (18655 total)
+10:38:07 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:07 [INFO] src.memory_monitor — [end 2026-01-13] RSS=1856.4MB (7.6%)
+10:38:07 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:07 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-14
+10:38:07 [INFO] src.memory_monitor — [start 2026-01-14] RSS=1856.4MB (7.6%)
+10:38:09 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-14.parquet
+10:38:09 [INFO] src.join_daily — Join result for 2026-01-14 [SANPLAT]: 1973209 rows (from 583889 DISP × 1973209 Diario)
+10:38:09 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-14.parquet
+10:38:10 [INFO] src.join_daily — Join result for 2026-01-14 [ORCA]: 1973209 rows (from 1425252 DISP × 1973209 Diario)
+10:38:10 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:10 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:10 [INFO] src.join_daily — MEDIDORES join: 3946418 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2582290
+        1226434
+        63204
+        39828
+        11082
+]}
+10:38:11 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-14: 1436 groups, comm=1752143, total=3946418
+10:38:11 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:11 [INFO] src.memory_monitor — Memory check: RSS=1890.4MB (7.8%)
+10:38:11 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (20091 total)
+10:38:11 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:11 [INFO] src.memory_monitor — [end 2026-01-14] RSS=1884.3MB (7.7%)
+10:38:11 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:11 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-15
+10:38:11 [INFO] src.memory_monitor — [start 2026-01-15] RSS=1884.3MB (7.7%)
+10:38:12 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-15.parquet
+10:38:13 [INFO] src.join_daily — Join result for 2026-01-15 [ORCA]: 1973309 rows (from 1425252 DISP × 1973309 Diario)
+10:38:13 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-15.parquet
+10:38:13 [INFO] src.join_daily — Join result for 2026-01-15 [SANPLAT]: 1973309 rows (from 583889 DISP × 1973309 Diario)
+10:38:13 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:13 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:14 [INFO] src.join_daily — MEDIDORES join: 3946618 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2582628
+        1226708
+        63204
+        39816
+        11094
+]}
+10:38:14 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-15: 1436 groups, comm=1749518, total=3946618
+10:38:14 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:14 [INFO] src.memory_monitor — Memory check: RSS=1844.9MB (7.6%)
+10:38:14 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (21527 total)
+10:38:14 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:14 [INFO] src.memory_monitor — [end 2026-01-15] RSS=1835.7MB (7.5%)
+10:38:14 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:14 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-16
+10:38:14 [INFO] src.memory_monitor — [start 2026-01-16] RSS=1835.7MB (7.5%)
+10:38:16 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-16.parquet
+10:38:16 [INFO] src.join_daily — Join result for 2026-01-16 [ORCA]: 1973377 rows (from 1425252 DISP × 1973377 Diario)
+10:38:16 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-16.parquet
+10:38:16 [INFO] src.join_daily — Join result for 2026-01-16 [SANPLAT]: 1973377 rows (from 583889 DISP × 1973377 Diario)
+10:38:17 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:17 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:17 [INFO] src.join_daily — MEDIDORES join: 3946754 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2582828
+        1226940
+        63204
+        39804
+        11100
+]}
+10:38:17 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-16: 1436 groups, comm=1749516, total=3946754
+10:38:17 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:17 [INFO] src.memory_monitor — Memory check: RSS=1858.3MB (7.6%)
+10:38:17 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (22963 total)
+10:38:17 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:17 [INFO] src.memory_monitor — [end 2026-01-16] RSS=1858.4MB (7.6%)
+10:38:17 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:17 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-17
+10:38:17 [INFO] src.memory_monitor — [start 2026-01-17] RSS=1858.4MB (7.6%)
+10:38:19 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-17.parquet
+10:38:20 [INFO] src.join_daily — Join result for 2026-01-17 [ORCA]: 1973609 rows (from 1425252 DISP × 1973609 Diario)
+10:38:20 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-17.parquet
+10:38:20 [INFO] src.join_daily — Join result for 2026-01-17 [SANPLAT]: 1973609 rows (from 583889 DISP × 1973609 Diario)
+10:38:20 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:20 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:21 [INFO] src.join_daily — MEDIDORES join: 3947218 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2583086
+        1227280
+        63204
+        39790
+        11118
+]}
+10:38:21 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-17: 1436 groups, comm=1750198, total=3947218
+10:38:21 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:21 [INFO] src.memory_monitor — Memory check: RSS=1847.3MB (7.6%)
+10:38:21 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (24399 total)
+10:38:21 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:21 [INFO] src.memory_monitor — [end 2026-01-17] RSS=1802.8MB (7.4%)
+10:38:21 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:21 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-18
+10:38:21 [INFO] src.memory_monitor — [start 2026-01-18] RSS=1802.8MB (7.4%)
+10:38:22 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-18.parquet
+10:38:23 [INFO] src.join_daily — Join result for 2026-01-18 [ORCA]: 1973624 rows (from 1425252 DISP × 1973624 Diario)
+10:38:23 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-18.parquet
+10:38:23 [INFO] src.join_daily — Join result for 2026-01-18 [SANPLAT]: 1973624 rows (from 583889 DISP × 1973624 Diario)
+10:38:23 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:23 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:24 [INFO] src.join_daily — MEDIDORES join: 3947248 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2583126
+        1227298
+        63204
+        39790
+        11118
+]}
+10:38:24 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-18: 1436 groups, comm=1750744, total=3947248
+10:38:24 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:24 [INFO] src.memory_monitor — Memory check: RSS=1872.1MB (7.7%)
+10:38:24 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (25835 total)
+10:38:24 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:24 [INFO] src.memory_monitor — [end 2026-01-18] RSS=1859.6MB (7.6%)
+10:38:24 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:24 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-19
+10:38:24 [INFO] src.memory_monitor — [start 2026-01-19] RSS=1859.6MB (7.6%)
+10:38:26 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-19.parquet
+10:38:26 [INFO] src.join_daily — Join result for 2026-01-19 [SANPLAT]: 1973774 rows (from 583889 DISP × 1973774 Diario)
+10:38:26 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-19.parquet
+10:38:26 [INFO] src.join_daily — Join result for 2026-01-19 [ORCA]: 1973774 rows (from 1425252 DISP × 1973774 Diario)
+10:38:26 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:26 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:27 [INFO] src.join_daily — MEDIDORES join: 3947548 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2583430
+        1227594
+        63204
+        39784
+        11126
+]}
+10:38:27 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-19: 1436 groups, comm=1749982, total=3947548
+10:38:27 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:27 [INFO] src.memory_monitor — Memory check: RSS=1774.4MB (7.3%)
+10:38:27 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (27271 total)
+10:38:27 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:27 [INFO] src.memory_monitor — [end 2026-01-19] RSS=1774.1MB (7.3%)
+10:38:27 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:27 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-20
+10:38:27 [INFO] src.memory_monitor — [start 2026-01-20] RSS=1774.1MB (7.3%)
+10:38:29 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-20.parquet
+10:38:30 [INFO] src.join_daily — Join result for 2026-01-20 [SANPLAT]: 1973956 rows (from 583889 DISP × 1973956 Diario)
+10:38:30 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-20.parquet
+10:38:30 [INFO] src.join_daily — Join result for 2026-01-20 [ORCA]: 1973956 rows (from 1425252 DISP × 1973956 Diario)
+10:38:30 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:30 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:31 [INFO] src.join_daily — MEDIDORES join: 3947912 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2583790
+        1227930
+        63204
+        39770
+        11142
+]}
+10:38:31 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-20: 1436 groups, comm=1750435, total=3947912
+10:38:31 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:31 [INFO] src.memory_monitor — Memory check: RSS=1853.3MB (7.6%)
+10:38:31 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (28707 total)
+10:38:31 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:31 [INFO] src.memory_monitor — [end 2026-01-20] RSS=1841.3MB (7.6%)
+10:38:31 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:31 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-21
+10:38:31 [INFO] src.memory_monitor — [start 2026-01-21] RSS=1841.3MB (7.6%)
+10:38:32 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-21.parquet
+10:38:33 [INFO] src.join_daily — Join result for 2026-01-21 [SANPLAT]: 1974184 rows (from 583889 DISP × 1974184 Diario)
+10:38:33 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-21.parquet
+10:38:33 [INFO] src.join_daily — Join result for 2026-01-21 [ORCA]: 1974184 rows (from 1425252 DISP × 1974184 Diario)
+10:38:33 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:33 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:34 [INFO] src.join_daily — MEDIDORES join: 3948368 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2584278
+        1228278
+        63204
+        39750
+        11158
+]}
+10:38:34 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-21: 1436 groups, comm=1750028, total=3948368
+10:38:34 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:34 [INFO] src.memory_monitor — Memory check: RSS=1801.2MB (7.4%)
+10:38:34 [INFO] src.sink_manager — [OK] Appended 1436 rows to stream (30143 total)
+10:38:34 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:34 [INFO] src.memory_monitor — [end 2026-01-21] RSS=1793.7MB (7.4%)
+10:38:34 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:34 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-22
+10:38:34 [INFO] src.memory_monitor — [start 2026-01-22] RSS=1793.7MB (7.4%)
+10:38:35 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-22.parquet
+10:38:36 [INFO] src.join_daily — Join result for 2026-01-22 [ORCA]: 1974267 rows (from 1425252 DISP × 1974267 Diario)
+10:38:36 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-22.parquet
+10:38:36 [INFO] src.join_daily — Join result for 2026-01-22 [SANPLAT]: 1974267 rows (from 583889 DISP × 1974267 Diario)
+10:38:36 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:36 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:37 [INFO] src.join_daily — MEDIDORES join: 3948534 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2584562
+        1228582
+        63204
+        39732
+        11162
+]}
+10:38:37 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-22: 1435 groups, comm=1750681, total=3948534
+10:38:37 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:37 [INFO] src.memory_monitor — Memory check: RSS=1781.0MB (7.3%)
+10:38:37 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (31578 total)
+10:38:37 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:37 [INFO] src.memory_monitor — [end 2026-01-22] RSS=1778.3MB (7.3%)
+10:38:37 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:37 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-23
+10:38:37 [INFO] src.memory_monitor — [start 2026-01-23] RSS=1778.3MB (7.3%)
+10:38:39 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-23.parquet
+10:38:40 [INFO] src.join_daily — Join result for 2026-01-23 [ORCA]: 1974335 rows (from 1425252 DISP × 1974335 Diario)
+10:38:40 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-23.parquet
+10:38:40 [INFO] src.join_daily — Join result for 2026-01-23 [SANPLAT]: 1974335 rows (from 583889 DISP × 1974335 Diario)
+10:38:40 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:40 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:41 [INFO] src.join_daily — MEDIDORES join: 3948670 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2584796
+        1228722
+        63204
+        39728
+        11162
+]}
+10:38:41 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-23: 1435 groups, comm=1747005, total=3948670
+10:38:41 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:41 [INFO] src.memory_monitor — Memory check: RSS=1832.0MB (7.5%)
+10:38:41 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (33013 total)
+10:38:41 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:41 [INFO] src.memory_monitor — [end 2026-01-23] RSS=1828.9MB (7.5%)
+10:38:41 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:41 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-24
+10:38:41 [INFO] src.memory_monitor — [start 2026-01-24] RSS=1828.9MB (7.5%)
+10:38:42 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-24.parquet
+10:38:43 [INFO] src.join_daily — Join result for 2026-01-24 [SANPLAT]: 1974483 rows (from 583889 DISP × 1974483 Diario)
+10:38:43 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-24.parquet
+10:38:43 [INFO] src.join_daily — Join result for 2026-01-24 [ORCA]: 1974483 rows (from 1425252 DISP × 1974483 Diario)
+10:38:43 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:43 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:44 [INFO] src.join_daily — MEDIDORES join: 3948966 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2585056
+        1228854
+        63204
+        39718
+        11194
+]}
+10:38:44 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-24: 1435 groups, comm=1747947, total=3948966
+10:38:44 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:44 [INFO] src.memory_monitor — Memory check: RSS=1856.7MB (7.6%)
+10:38:44 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (34448 total)
+10:38:44 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:44 [INFO] src.memory_monitor — [end 2026-01-24] RSS=1827.3MB (7.5%)
+10:38:44 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:44 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-25
+10:38:44 [INFO] src.memory_monitor — [start 2026-01-25] RSS=1827.3MB (7.5%)
+10:38:46 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-25.parquet
+10:38:47 [INFO] src.join_daily — Join result for 2026-01-25 [ORCA]: 1974586 rows (from 1425252 DISP × 1974586 Diario)
+10:38:47 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-25.parquet
+10:38:47 [INFO] src.join_daily — Join result for 2026-01-25 [SANPLAT]: 1974586 rows (from 583889 DISP × 1974586 Diario)
+10:38:47 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:47 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:48 [INFO] src.join_daily — MEDIDORES join: 3949172 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2585238
+        1228942
+        63204
+        39714
+        11200
+]}
+10:38:48 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-25: 1435 groups, comm=1747351, total=3949172
+10:38:48 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:48 [INFO] src.memory_monitor — Memory check: RSS=1865.9MB (7.7%)
+10:38:48 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (35883 total)
+10:38:48 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:48 [INFO] src.memory_monitor — [end 2026-01-25] RSS=1855.6MB (7.6%)
+10:38:48 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:48 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-26
+10:38:48 [INFO] src.memory_monitor — [start 2026-01-26] RSS=1855.6MB (7.6%)
+10:38:49 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-26.parquet
+10:38:50 [INFO] src.join_daily — Join result for 2026-01-26 [ORCA]: 1974777 rows (from 1425252 DISP × 1974777 Diario)
+10:38:50 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-26.parquet
+10:38:50 [INFO] src.join_daily — Join result for 2026-01-26 [SANPLAT]: 1974777 rows (from 583889 DISP × 1974777 Diario)
+10:38:50 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:50 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:51 [INFO] src.join_daily — MEDIDORES join: 3949554 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2585620
+        1229218
+        63204
+        39686
+        11238
+]}
+10:38:51 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-26: 1435 groups, comm=1746831, total=3949554
+10:38:51 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:51 [INFO] src.memory_monitor — Memory check: RSS=1887.5MB (7.8%)
+10:38:51 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (37318 total)
+10:38:51 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:51 [INFO] src.memory_monitor — [end 2026-01-26] RSS=1863.7MB (7.7%)
+10:38:51 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:51 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-27
+10:38:51 [INFO] src.memory_monitor — [start 2026-01-27] RSS=1863.7MB (7.7%)
+10:38:52 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-27.parquet
+10:38:53 [INFO] src.join_daily — Join result for 2026-01-27 [SANPLAT]: 1974946 rows (from 583889 DISP × 1974946 Diario)
+10:38:53 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-27.parquet
+10:38:53 [INFO] src.join_daily — Join result for 2026-01-27 [ORCA]: 1974946 rows (from 1425252 DISP × 1974946 Diario)
+10:38:53 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:53 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:54 [INFO] src.join_daily — MEDIDORES join: 3949892 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2586014
+        1229500
+        63204
+        39618
+        11278
+]}
+10:38:54 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-27: 1435 groups, comm=1745704, total=3949892
+10:38:54 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:54 [INFO] src.memory_monitor — Memory check: RSS=1873.6MB (7.7%)
+10:38:54 [INFO] src.sink_manager — [OK] Appended 1435 rows to stream (38753 total)
+10:38:54 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:54 [INFO] src.memory_monitor — [end 2026-01-27] RSS=1873.6MB (7.7%)
+10:38:54 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:54 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-28
+10:38:54 [INFO] src.memory_monitor — [start 2026-01-28] RSS=1873.6MB (7.7%)
+10:38:56 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-28.parquet
+10:38:56 [INFO] src.join_daily — Join result for 2026-01-28 [SANPLAT]: 1975082 rows (from 583889 DISP × 1975082 Diario)
+10:38:56 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-28.parquet
+10:38:57 [INFO] src.join_daily — Join result for 2026-01-28 [ORCA]: 1975082 rows (from 1425252 DISP × 1975082 Diario)
+10:38:57 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:38:57 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:38:57 [INFO] src.join_daily — MEDIDORES join: 3950164 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2586412
+        1229768
+        63204
+        39582
+        11308
+]}
+10:38:58 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-28: 1432 groups, comm=1747997, total=3950164
+10:38:58 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:38:58 [INFO] src.memory_monitor — Memory check: RSS=1858.7MB (7.6%)
+10:38:58 [INFO] src.sink_manager — [OK] Appended 1432 rows to stream (40185 total)
+10:38:58 [INFO] src.sink_manager — Sink slot released (0 active)
+10:38:58 [INFO] src.memory_monitor — [end 2026-01-28] RSS=1850.0MB (7.6%)
+10:38:58 [INFO] src.pipeline_orchestrator — ============================================================
+10:38:58 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-29
+10:38:58 [INFO] src.memory_monitor — [start 2026-01-29] RSS=1850.0MB (7.6%)
+10:38:59 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-29.parquet
+10:39:00 [INFO] src.join_daily — Join result for 2026-01-29 [SANPLAT]: 1975138 rows (from 583889 DISP × 1975138 Diario)
+10:39:00 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-29.parquet
+10:39:00 [INFO] src.join_daily — Join result for 2026-01-29 [ORCA]: 1975138 rows (from 1425252 DISP × 1975138 Diario)
+10:39:00 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:39:00 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:39:01 [INFO] src.join_daily — MEDIDORES join: 3950276 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2586684
+        1229996
+        63204
+        39554
+        11324
+]}
+10:39:01 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-29: 1431 groups, comm=1749055, total=3950276
+10:39:01 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:39:01 [INFO] src.memory_monitor — Memory check: RSS=1795.7MB (7.4%)
+10:39:01 [INFO] src.sink_manager — [OK] Appended 1431 rows to stream (41616 total)
+10:39:01 [INFO] src.sink_manager — Sink slot released (0 active)
+10:39:01 [INFO] src.memory_monitor — [end 2026-01-29] RSS=1795.8MB (7.4%)
+10:39:01 [INFO] src.pipeline_orchestrator — ============================================================
+10:39:01 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-30
+10:39:01 [INFO] src.memory_monitor — [start 2026-01-30] RSS=1795.8MB (7.4%)
+10:39:02 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-30.parquet
+10:39:03 [INFO] src.join_daily — Join result for 2026-01-30 [SANPLAT]: 1975195 rows (from 583889 DISP × 1975195 Diario)
+10:39:03 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-30.parquet
+10:39:03 [INFO] src.join_daily — Join result for 2026-01-30 [ORCA]: 1975195 rows (from 1425252 DISP × 1975195 Diario)
+10:39:03 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:39:03 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:39:04 [INFO] src.join_daily — MEDIDORES join: 3950390 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2586928
+        1230160
+        63204
+        39532
+        11330
+]}
+10:39:04 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-30: 1431 groups, comm=1752918, total=3950390
+10:39:04 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:39:04 [INFO] src.memory_monitor — Memory check: RSS=1836.4MB (7.5%)
+10:39:04 [INFO] src.sink_manager — [OK] Appended 1431 rows to stream (43047 total)
+10:39:04 [INFO] src.sink_manager — Sink slot released (0 active)
+10:39:04 [INFO] src.memory_monitor — [end 2026-01-30] RSS=1816.4MB (7.5%)
+10:39:04 [INFO] src.pipeline_orchestrator — ============================================================
+10:39:04 [INFO] src.pipeline_orchestrator — Processing date: 2026-01-31
+10:39:04 [INFO] src.memory_monitor — [start 2026-01-31] RSS=1816.4MB (7.5%)
+10:39:06 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-31.parquet
+10:39:06 [INFO] src.join_daily — Join result for 2026-01-31 [ORCA]: 1975293 rows (from 1425252 DISP × 1975293 Diario)
+10:39:06 [INFO] src.join_daily — Loading Diario: D:\dados\Diario\Diario_2026-01-31.parquet
+10:39:06 [INFO] src.join_daily — Join result for 2026-01-31 [SANPLAT]: 1975293 rows (from 583889 DISP × 1975293 Diario)
+10:39:06 [INFO] src.join_daily — Loading MEDIDORES: data\refined\CIS\MEDIDORES.parquet
+10:39:07 [INFO] src.join_daily — MEDIDORES: 2063054 rows loaded
+10:39:07 [INFO] src.join_daily — MEDIDORES join: 3950586 rows, brands: {'INTELIGENTE': shape: (5,)
+Series: 'INTELIGENTE' [str]
+[
+        "Hexing"
+        "Nansen"
+        "WALK BY"
+        "Convencional"
+        "CQL fora escopo"
+], 'count': shape: (5,)
+Series: 'count' [u32]
+[
+        2587102
+        1230336
+        63204
+        39516
+        11348
+]}
+10:39:07 [INFO] src.pipeline_orchestrator — Aggregated 2026-01-31: 1430 groups, comm=1753800, total=3950586
+10:39:07 [INFO] src.sink_manager — Sink slot acquired (1 active)
+10:39:07 [INFO] src.memory_monitor — Memory check: RSS=1863.0MB (7.7%)
+10:39:07 [INFO] src.sink_manager — [OK] Appended 1430 rows to stream (44477 total)
+10:39:07 [INFO] src.sink_manager — Sink slot released (0 active)
+10:39:07 [INFO] src.memory_monitor — [end 2026-01-31] RSS=1858.2MB (7.6%)
+10:39:07 [INFO] src.sink_manager — Closed stream (44477 total rows) → data\trusted\municipio_daily\municipio_2026-01.csv
+10:39:07 [INFO] src.sink_manager — Converting data\trusted\municipio_daily\municipio_2026-01.csv → data\trusted\municipio_daily\municipio_2026-01.parquet (lazy scan + sink)
+10:39:07 [INFO] src.sink_manager — [OK] Parquet written → data\trusted\municipio_daily\municipio_2026-01.parquet
+10:39:07 [INFO] src.pipeline_orchestrator — Pipeline finished in 157.5s — 31 ok, 0 failed out of 31 dates
+10:39:07 [INFO] src.memory_monitor — [pipeline_end] RSS=1795.1MB (7.4%)
+
+(visualizer-tuis) D:\Projects\visualizer-tuis>

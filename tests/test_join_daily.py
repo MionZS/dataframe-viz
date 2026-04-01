@@ -6,7 +6,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from src.join_daily import join_with_diario
+from src.join_daily import join_with_diario, join_with_medidores
 
 
 @pytest.fixture()
@@ -81,3 +81,47 @@ class TestJoinDaily:
         assert muni["B"] == "LONDRINA"
         assert muni["C"] == "CURITIBA"
         assert muni["D"] == "MARINGA"
+
+
+class TestJoinMedidores:
+    """Tests for join_with_medidores()."""
+
+    def test_adds_inteligente_column(self, tmp_path: Path):
+        """Only smart brands (Hexing, Nansen, Nansen Ipiranga) survive."""
+        medidores = pl.DataFrame({
+            "NIO": ["A", "B", "C", "E"],
+            "INTELIGENTE": ["Hexing", "Outro", "Nansen", "Nansen Ipiranga"],
+        })
+        med_path = tmp_path / "MEDIDORES.parquet"
+        medidores.write_parquet(str(med_path))
+
+        joined = pl.DataFrame({
+            "NIO": ["A", "B", "D"],
+            "MUNICIPIO": ["CWB", "LDA", "MGA"],
+            "ORIGEM": ["ORCA", "ORCA", "ORCA"],
+            "DISP": [1, 0, 1],
+        }).cast({"NIO": pl.Utf8, "DISP": pl.Int8})
+
+        result = join_with_medidores(joined, str(med_path))
+
+        assert "INTELIGENTE" in result.columns
+        # A=Hexing (smart, in joined) → kept
+        # B=Outro (not smart) → filtered out of MEDIDORES, no match
+        # D not in MEDIDORES → no match
+        assert result.height == 1
+        assert result["NIO"][0] == "A"
+        assert result["INTELIGENTE"][0] == "Hexing"
+
+    def test_missing_medidores_returns_empty(self, tmp_path: Path):
+        """When MEDIDORES file is missing, result is empty."""
+        joined = pl.DataFrame({
+            "NIO": ["A"],
+            "MUNICIPIO": ["CWB"],
+            "ORIGEM": ["ORCA"],
+            "DISP": [1],
+        }).cast({"NIO": pl.Utf8, "DISP": pl.Int8})
+
+        result = join_with_medidores(joined, str(tmp_path / "nonexistent.parquet"))
+
+        assert "INTELIGENTE" in result.columns
+        assert result.height == 0

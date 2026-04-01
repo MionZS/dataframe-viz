@@ -101,6 +101,89 @@ def join_with_diario(
     return joined
 
 
+_SMART_METER_BRANDS = {"Hexing", "Nansen", "Nansen Ipiranga"}
+
+
+def join_with_medidores(
+    joined_df: pl.DataFrame,
+    medidores_path: str,
+    nio_col: str = "NIO",
+) -> pl.DataFrame:
+    """Left-join with MEDIDORES to add the INTELIGENTE brand column.
+
+    Only meters whose brand is in ``_SMART_METER_BRANDS`` are kept.
+    Meters absent from MEDIDORES or with a brand outside the set
+    are dropped from the result.
+
+    Parameters
+    ----------
+    joined_df:
+        DataFrame that already has [NIO, MUNICIPIO, ORIGEM, DISP].
+    medidores_path:
+        Path to MEDIDORES.parquet (columns include NIO, INTELIGENTE).
+    nio_col:
+        Name of the meter-identifier column.
+
+    Returns
+    -------
+    DataFrame with columns [NIO, MUNICIPIO, ORIGEM, DISP, INTELIGENTE].
+    Only rows matching a smart-meter brand are included.
+    """
+    path = Path(medidores_path)
+    if not path.exists():
+        logger.warning("MEDIDORES not found: %s — returning empty", path)
+        return joined_df.head(0).with_columns(
+            pl.lit("").alias("INTELIGENTE"),
+        )
+
+    logger.info("Loading MEDIDORES: %s", path)
+    medidores = (
+        pl.scan_parquet(str(path))
+        .select([nio_col, "INTELIGENTE"])
+        .collect()
+    )
+
+    # Cast INTELIGENTE to Utf8 (may be Categorical in the source),
+    # then keep only the brands we care about.
+    medidores = medidores.with_columns(
+        pl.col("INTELIGENTE").cast(pl.Utf8),
+    ).filter(
+        pl.col("INTELIGENTE").is_in(list(_SMART_METER_BRANDS))
+    )
+
+    logger.info(
+        "MEDIDORES: %d smart meters (%s)",
+        medidores.height,
+        ", ".join(f"{b}={medidores.filter(pl.col('INTELIGENTE') == b).height}"
+                  for b in sorted(_SMART_METER_BRANDS)),
+    )
+
+    # Normalize NIO: cast to string and strip leading zeros
+    def _normalize_nio(df: pl.DataFrame, col: str) -> pl.DataFrame:
+        if col not in df.columns:
+            return df
+        return df.with_columns(
+            pl.col(col).cast(pl.Utf8)
+            .str.replace(r"^0+(.)", r"$1")
+            .alias(col)
+        )
+
+    joined_norm = _normalize_nio(joined_df, nio_col)
+    med_norm = _normalize_nio(medidores, nio_col)
+
+    # Inner join: only meters present in both joined_df and smart MEDIDORES
+    result = joined_norm.join(med_norm, on=nio_col, how="inner")
+
+    logger.info(
+        "MEDIDORES join: %d rows kept out of %d",
+        result.height,
+        joined_df.height,
+    )
+
+    del medidores, med_norm, joined_norm
+    return result
+
+
 def _empty_result(nio_col: str, municipio_col: str) -> pl.DataFrame:
     """Return an empty DataFrame with the expected post-join schema."""
     return pl.DataFrame({

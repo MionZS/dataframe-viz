@@ -6,7 +6,12 @@ from unittest.mock import patch
 import polars as pl
 import pytest
 
-from src.pipeline_orchestrator import aggregate, build_date_range, _run_enrichment
+from src.pipeline_orchestrator import (
+    aggregate,
+    build_date_range,
+    build_month_dates,
+    _run_enrichment,
+)
 
 
 class TestBuildDateRange:
@@ -33,55 +38,105 @@ class TestBuildDateRange:
         assert len(dates) == 31
 
 
+class TestBuildMonthDates:
+    """Tests for build_month_dates()."""
+
+    def test_january_2026(self):
+        """Jan 2026 → 31 dates, all within January."""
+        dates = build_month_dates("2026-01")
+        assert len(dates) == 31
+        assert dates[0] == datetime(2026, 1, 1)
+        assert dates[-1] == datetime(2026, 1, 31)
+
+    def test_february_non_leap(self):
+        """Feb 2026 → 28 dates."""
+        dates = build_month_dates("2026-02")
+        assert len(dates) == 28
+
+
 class TestAggregate:
     """Tests for aggregate()."""
 
     def test_basic_aggregation(self):
-        """Group 4 rows into 2 groups."""
+        """Group by [MUNICIPIO, INTELIGENTE] — 3 groups with DISP."""
         joined = pl.DataFrame({
             "NIO": ["A", "B", "C", "D"],
             "MUNICIPIO": ["CWB", "CWB", "LDA", "LDA"],
             "ORIGEM": ["ORCA", "ORCA", "ORCA", "ORCA"],
             "DISP": [1, 0, 1, 1],
+            "INTELIGENTE": ["Hexing", "Nansen", "Hexing", "Hexing"],
         })
         target = datetime(2026, 1, 25)
         agg = aggregate(joined, target)
 
-        assert agg.height == 2
         assert "CONTAGEM_COMM" in agg.columns
         assert "CONTAGEM_TOT" in agg.columns
+        assert "INTELIGENTE" in agg.columns
+        assert "DISP" in agg.columns
         assert "DATA" in agg.columns
+        assert "ORIGEM" not in agg.columns
 
-        cwb = agg.filter(pl.col("MUNICIPIO") == "CWB")
-        assert cwb["CONTAGEM_COMM"][0] == 1
-        assert cwb["CONTAGEM_TOT"][0] == 2
+        # CWB+Hexing: A(1) → comm=1, tot=1, DISP=1.0
+        cwb_hexing = agg.filter(
+            (pl.col("MUNICIPIO") == "CWB") & (pl.col("INTELIGENTE") == "Hexing")
+        )
+        assert cwb_hexing["CONTAGEM_COMM"][0] == 1
+        assert cwb_hexing["CONTAGEM_TOT"][0] == 1
+        assert cwb_hexing["DISP"][0] == pytest.approx(1.0)
 
+        # CWB+Nansen: B(0) → comm=0, tot=1, DISP=0.0
+        cwb_nansen = agg.filter(
+            (pl.col("MUNICIPIO") == "CWB") & (pl.col("INTELIGENTE") == "Nansen")
+        )
+        assert cwb_nansen["CONTAGEM_COMM"][0] == 0
+        assert cwb_nansen["CONTAGEM_TOT"][0] == 1
+        assert cwb_nansen["DISP"][0] == pytest.approx(0.0)
+
+        # LDA+Hexing: C(1)+D(1) → comm=2, tot=2, DISP=1.0
         lda = agg.filter(pl.col("MUNICIPIO") == "LDA")
+        assert lda.height == 1
         assert lda["CONTAGEM_COMM"][0] == 2
         assert lda["CONTAGEM_TOT"][0] == 2
+        assert lda["DISP"][0] == pytest.approx(1.0)
 
     def test_empty_input(self):
         """Empty joined frame should return empty aggregated frame."""
         joined = pl.DataFrame({
             "NIO": [], "MUNICIPIO": [], "ORIGEM": [], "DISP": [],
+            "INTELIGENTE": [],
         }).cast({
             "NIO": pl.Utf8, "MUNICIPIO": pl.Utf8,
             "ORIGEM": pl.Utf8, "DISP": pl.Int8,
+            "INTELIGENTE": pl.Utf8,
         })
         agg = aggregate(joined, datetime(2026, 1, 1))
         assert agg.height == 0
-        assert set(agg.columns) == {"MUNICIPIO", "ORIGEM", "CONTAGEM_COMM", "CONTAGEM_TOT", "DATA"}
+        assert set(agg.columns) == {
+            "MUNICIPIO", "INTELIGENTE", "CONTAGEM_COMM",
+            "CONTAGEM_TOT", "DISP", "DATA",
+        }
 
-    def test_mixed_origens(self):
-        """Two different origens should produce separate groups."""
+    def test_same_municipio_different_brands(self):
+        """Same municipality, different brands → 2 groups with DISP."""
         joined = pl.DataFrame({
             "NIO": ["A", "B", "C"],
             "MUNICIPIO": ["CWB", "CWB", "CWB"],
             "ORIGEM": ["ORCA", "SANPLAT", "ORCA"],
             "DISP": [1, 1, 0],
+            "INTELIGENTE": ["Hexing", "Nansen Ipiranga", "Hexing"],
         })
         agg = aggregate(joined, datetime(2026, 1, 25))
-        assert agg.height == 2  # CWB+ORCA, CWB+SANPLAT
+        assert agg.height == 2  # CWB+Hexing, CWB+Nansen Ipiranga
+
+        hexing = agg.filter(pl.col("INTELIGENTE") == "Hexing")
+        assert hexing["CONTAGEM_COMM"][0] == 1
+        assert hexing["CONTAGEM_TOT"][0] == 2
+        assert hexing["DISP"][0] == pytest.approx(0.5)
+
+        nansen_ip = agg.filter(pl.col("INTELIGENTE") == "Nansen Ipiranga")
+        assert nansen_ip["CONTAGEM_COMM"][0] == 1
+        assert nansen_ip["CONTAGEM_TOT"][0] == 1
+        assert nansen_ip["DISP"][0] == pytest.approx(1.0)
 
 
 class TestRunEnrichment:
