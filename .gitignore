@@ -23,3 +23,8 @@ __pycache__/
 output/
 results/
 data/
+
+# Ignore final municipio_daily outputs (keep local copies, do not track)
+data/trusted/municipio_daily/
+data/trusted/municipio_daily/*.csv
+data/trusted/municipio_daily/*.parquet
