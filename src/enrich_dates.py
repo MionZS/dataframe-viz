@@ -174,6 +174,11 @@ def process_sanplat(
     # Rename relative columns to absolute dates
     rename_map = build_column_rename_map(df, start_date)
     enriched_df = df.rename(rename_map)
+    
+    # Normalize meter ID column: rename "Device No." to "NIO" to match ORCA
+    if "Device No." in enriched_df.columns:
+        enriched_df = enriched_df.rename({"Device No.": "NIO"})
+        print(f"[INFO] Normalized column: 'Device No.' → 'NIO'")
 
     # Save to trusted directory
     output_file = output_dir / f"{data_file.stem}_com_datas.csv"

@@ -2,7 +2,7 @@
 # See docs/prd/PRD_smart_meter_pipeline_v1.0.0.md for full specification
 
 # Target month for processing (YYYY-MM)
-target_month: "2026-01"
+target_month: "2026-03"
 
 # Number of look-back days for the moving window OR rule
 moving_window_days: 5
@@ -34,7 +34,7 @@ paths:
   sanplat_enriched: "data/trusted/SANPLAT/Dados_Comunicacao_SANPLAT_com_datas.csv"
 
   # Diario directory (files named Diario_YYYY-MM-DD.parquet)
-  diario_dir: "D:/dados/Diario"
+  diario_dir: "D:/Projects/visualizer-tuis/data/raw/CIS/Diario"
 
   # MEDIDORES file (NIO, INTELIGENTE)
   medidores: "data/refined/CIS/MEDIDORES.parquet"

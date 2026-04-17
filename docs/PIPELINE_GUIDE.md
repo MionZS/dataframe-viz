@@ -46,7 +46,7 @@ intermediate 0/1 that feeds the count.
 | **SANPLAT refined** | `data/refined/SANPLAT/Dados_Comunicacao_SANPLAT.csv` | NIO, 91…1 (relative days) | ~584K meters. Already binary 0/1 |
 | **ORCA ref date** | `data/trusted/CIS/Data_Referencia.csv` | Single date value | Anchor for column→date mapping |
 | **SANPLAT ref date** | `data/trusted/SANPLAT/Data_Referencia_2.csv` | Single date value | Anchor for column→date mapping |
-| **Diário** | `D:/dados/Diario/Diario_YYYY-MM-DD.parquet` | NIO, MUNICIPIO | ~1.97M meters/day. Source of truth for the meter universe |
+| **Diário** | `D:/Projects/visualizer-tuis/data/raw/CIS/Diario/Diario_YYYY-MM-DD.parquet` | NIO, MUNICIPIO | ~1.97M meters/day. Source of truth for the meter universe |
 | **MEDIDORES** | `data/refined/CIS/MEDIDORES.parquet` | NIO, INTELIGENTE | ~2M rows. INTELIGENTE = meter brand string |
 
 ### Smart Meter Brands (filter set)
@@ -175,10 +175,10 @@ January). Each day follows this pipeline:
 day_disp = mixed_lazy.filter(pl.col("DATA") == "2026-01-15").collect()
 ```
 
-Split by ORIGEM because each origin's meters must be joined with the same
-Diário file but tagged separately.
+Then collapse ORCA/SANPLAT into a single per-day DISP frame by selecting
+`[NIO, DISP]` and deduplicating on `NIO` (safety guard for overlap).
 
-### Step 3.2 — Join with Diário (LEFT JOIN from Diário)
+### Step 3.2 — Join with Diário (LEFT JOIN from Diário, once per day)
 
 **Function:** `join_with_diario()`  
 **Join type:** LEFT JOIN — **Diário is the left table.**
@@ -199,8 +199,9 @@ the join.
 
 **Result columns:** `[NIO, MUNICIPIO, ORIGEM, DISP]`
 
-This is done **per ORIGEM** (once for ORCA rows, once for SANPLAT rows),
-then the results are concatenated.
+This join is done **once per day** using the merged DISP frame. `ORIGEM`
+is set to a constant internal tag (`"MIXED"`) only for schema compatibility
+and is dropped at aggregate.
 
 ### Step 3.3 — Join with MEDIDORES (INNER JOIN)
 
@@ -319,7 +320,7 @@ rows** in the output (actual count depends on brand coverage).
 │                                                                     │
 │  ┌─────────────┐    ┌───────────────────────────┐                   │
 │  │ mixed DISP  │───→│ Filter: DATA = "2026-01-D"│                   │
-│  │ (lazy scan) │    │ Split by ORIGEM            │                   │
+│  │ (lazy scan) │    │ Merge by NIO (unique)      │                   │
 │  └─────────────┘    └─────────┬─────────────────┘                   │
 │                               │                                     │
 │                               ▼                                     │
@@ -400,8 +401,9 @@ DATA            ← Literal date string added at aggregate
 Step                          Rows (approx)
 ─────────────────────────────────────────────
 mixed DISP for 1 day          ~2.0M (ORCA) + ~584K (SANPLAT) = ~2.6M
-After Diário LEFT JOIN         ~1.97M × 2 origins = ~3.94M
-After MEDIDORES INNER JOIN     ~3.80M (non-smart brands dropped)
+After merge-by-NIO             ~1.97M to ~2.0M
+After Diário LEFT JOIN         ~1.97M (Diário universe)
+After MEDIDORES INNER JOIN     depends on smart-brand coverage (subset of ~1.97M)
 After aggregate                ~400 municipalities × ≤3 brands ≈ ~1,200 rows
 ```
 

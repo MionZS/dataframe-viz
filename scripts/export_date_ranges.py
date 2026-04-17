@@ -1,23 +1,24 @@
 """Batch export selected date ranges from enriched files.
 
-Config file is a JSON list of objects with keys:
-  - input: path to enriched file (CSV or parquet)
-  - output: output CSV path
-  - from_date: start date (inclusive) in YYYY-MM-DD or DD/MM/YYYY
-  - to_date: end date (inclusive)
+Can be called in two ways:
 
-Example:
-[
-  {"input": "data/trusted/ORCA/Dados_Comunicacao_com_datas.csv", "output": "data/trusted/ORCA/out.csv", "from_date": "2025-12-27", "to_date": "2026-01-31"}
-]
+1. With pipeline.yaml (recommended):
+   python export_date_ranges.py config/pipeline.yaml
+   Reads target_month, calculates date range with 5-day lookback, exports ORCA & SANPLAT
+
+2. With export_config.json (legacy):
+   python export_date_ranges.py scripts/export_config.json
+   Uses explicit from_date/to_date from JSON config
 """
 from pathlib import Path
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import json
 import sys
 from typing import List, Dict, Optional
+import calendar
 
 import polars as pl
+import yaml
 
 # Helper: parse date string
 
@@ -72,6 +73,7 @@ def process_task(task: Dict) -> None:
     out = Path(task["output"])
     from_date = parse_date(task["from_date"]) if isinstance(task.get("from_date"), str) else None
     to_date = parse_date(task["to_date"]) if isinstance(task.get("to_date"), str) else None
+    overwrite = bool(task.get("overwrite", False))
 
     if not inp.exists():
         print(f"[ERROR] Input not found: {inp}")
@@ -100,6 +102,17 @@ def process_task(task: Dict) -> None:
 
     provider_tag = _detect_provider_tag(inp)
     out = _ensure_output_has_tag(out, provider_tag)
+
+    # Never overwrite by default. If output exists and overwrite=False,
+    # write to a unique sibling path with a run timestamp suffix.
+    def _resolve_output_path(path: Path, allow_overwrite: bool) -> Path:
+        if allow_overwrite or not path.exists():
+            return path
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return path.with_name(f"{path.stem}_run{stamp}{path.suffix}")
+
+    out = _resolve_output_path(out, overwrite)
+    out.parent.mkdir(parents=True, exist_ok=True)
     print(f"Adjusted output path: {out}")
     try:
         columns = _read_columns(inp)
@@ -131,12 +144,67 @@ def main(config_path: str):
     if not cfg.exists():
         print(f"Config not found: {cfg}")
         sys.exit(1)
-    try:
-        tasks = json.loads(cfg.read_text())
-    except Exception as e:
-        print(f"Failed to load JSON config: {e}")
-        sys.exit(1)
-
+    
+    # Detect config type: pipeline.yaml vs export_config.json
+    if cfg.name == "pipeline.yaml" or cfg.suffix == ".yaml":
+        # Load from pipeline.yaml and generate export config dynamically
+        print(f"[INFO] Loading from pipeline.yaml: {cfg}")
+        try:
+            with open(cfg) as f:
+                pipeline_cfg = yaml.safe_load(f)
+            # Support both top-level and nested `config` structures
+            target_month_str = None
+            if isinstance(pipeline_cfg, dict):
+                cfg_block = pipeline_cfg.get("config") if isinstance(pipeline_cfg.get("config"), dict) else None
+                if cfg_block and cfg_block.get("target_month"):
+                    target_month_str = cfg_block.get("target_month")
+                else:
+                    target_month_str = pipeline_cfg.get("target_month")
+            if not target_month_str:
+                raise KeyError("target_month not found in pipeline.yaml")
+        except Exception as e:
+            print(f"[ERROR] Failed to read pipeline.yaml: {e}")
+            sys.exit(1)
+        
+        # Parse target_month and calculate export window
+        target_date = datetime.strptime(target_month_str, "%Y-%m")
+        from_date = target_date - timedelta(days=5)  # 5-day lookback
+        
+        # Calculate last day of target month
+        last_day = calendar.monthrange(target_date.year, target_date.month)[1]
+        to_date = datetime(target_date.year, target_date.month, last_day)
+        
+        date_range_label = f"{target_date.strftime('%b%Y').lower()}"
+        from_str = from_date.strftime("%Y%m%d")
+        to_str = to_date.strftime("%Y%m%d")
+        
+        print(f"[INFO] Target month: {target_month_str}")
+        print(f"[INFO] Export window: {from_date.strftime('%Y-%m-%d')} to {to_date.strftime('%Y-%m-%d')}")
+        
+        # Generate tasks dynamically
+        tasks = [
+            {
+                "input": "data/trusted/ORCA/Dados_Comunicacao_com_datas.csv",
+                "output": f"data/trusted/ORCA/exports/Dados_Comunicacao_{date_range_label}_window_{from_str}_{to_str}.csv",
+                "from_date": from_date.strftime("%Y-%m-%d"),
+                "to_date": to_date.strftime("%Y-%m-%d")
+            },
+            {
+                "input": "data/trusted/SANPLAT/Dados_Comunicacao_SANPLAT_com_datas.csv",
+                "output": f"data/trusted/SANPLAT/exports/Dados_Comunicacao_{date_range_label}_window_{from_str}_{to_str}.csv",
+                "from_date": from_date.strftime("%Y-%m-%d"),
+                "to_date": to_date.strftime("%Y-%m-%d")
+            }
+        ]
+    else:
+        # Load from JSON config (legacy)
+        print(f"[INFO] Loading from export_config.json: {cfg}")
+        try:
+            tasks = json.loads(cfg.read_text())
+        except Exception as e:
+            print(f"Failed to load JSON config: {e}")
+            sys.exit(1)
+    
     if not isinstance(tasks, list):
         print("Config must be a list of task objects")
         sys.exit(1)

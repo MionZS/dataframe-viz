@@ -13,8 +13,9 @@ Reads config/pipeline.yaml and executes three phases:
         Concatenated:      mixed/disp_YYYY-MM.csv
 
     Phase 3 — Join & Aggregate  (final deliverable)
-        Inner-join with MEDIDORES (filter to smart brands only),
-        left-join with Diario (MUNICIPIO), aggregate by
+        Merge ORCA+SANPLAT DISP by NIO, left-join once with Diario
+        (MUNICIPIO), inner-join with MEDIDORES (smart brands only),
+        then aggregate by
         [MUNICIPIO, INTELIGENTE].  DISP = CONTAGEM_COMM / CONTAGEM_TOT.
         Stream-sink into a single output file.
         Output: municipio_daily/municipio_YYYY-MM.csv (.parquet)
