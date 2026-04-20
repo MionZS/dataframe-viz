@@ -1,40 +1,66 @@
 #!/usr/bin/env python3
 """Concatenate monthly `municipio` final outputs into a single CSV.
 
-Finds files named `municipio_YYYY-MM.csv` or `municipio_YYYY-MM.parquet`
-in `data/trusted/municipio_daily/`, concatenates them and writes
-`data/trusted/Indicador_comunicacao.csv`.
+Supports two variants:
+- full:   `municipio_YYYY-MM.csv|parquet`
+- simple: `municipio_YYYY-MM_1day.csv|parquet`
+
+For each month, selects at most one source file (prefers parquet over csv)
+to avoid duplicated rows when both formats exist.
 
 Usage:
   python scripts/concat_indicador.py
-  python scripts/concat_indicador.py --input-dir data/trusted/municipio_daily --output data/trusted/Indicador_comunicacao.csv --drop-duplicates
+    python scripts/concat_indicador.py --variant full
+    python scripts/concat_indicador.py --variant simple --output data/trusted/Indicador_comunicacao_simple.csv
 """
 from pathlib import Path
 import re
 import argparse
 import logging
-from typing import List
+from typing import Dict, List
 
 import polars as pl
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
+_PARQUET_SUFFIX = ".parquet"
 
-def find_monthly_files(input_dir: Path) -> List[Path]:
-    pattern = re.compile(r"^municipio_\d{4}-\d{2}\.(csv|parquet)$", re.IGNORECASE)
-    files = [p for p in sorted(input_dir.iterdir()) if pattern.match(p.name)]
-    return files
+
+def find_monthly_files(input_dir: Path, variant: str = "full") -> List[Path]:
+    if variant == "simple":
+        pattern = re.compile(r"^municipio_(\d{4}-\d{2})_1day\.(csv|parquet)$", re.IGNORECASE)
+    else:
+        pattern = re.compile(r"^municipio_(\d{4}-\d{2})\.(csv|parquet)$", re.IGNORECASE)
+
+    # Keep one file per month, preferring parquet if both exist.
+    by_month: Dict[str, Path] = {}
+    for p in sorted(input_dir.iterdir()):
+        m = pattern.match(p.name)
+        if not m:
+            continue
+
+        month = m.group(1)
+        chosen = by_month.get(month)
+        if chosen is None:
+            by_month[month] = p
+            continue
+
+        # Prefer parquet over csv.
+        if chosen.suffix.lower() != _PARQUET_SUFFIX and p.suffix.lower() == _PARQUET_SUFFIX:
+            by_month[month] = p
+
+    return [by_month[m] for m in sorted(by_month.keys())]
 
 
 def read_table(p: Path) -> pl.DataFrame:
     if p.suffix.lower() == ".csv":
         return pl.read_csv(p)
-    if p.suffix.lower() == ".parquet":
+    if p.suffix.lower() == _PARQUET_SUFFIX:
         return pl.read_parquet(p)
     raise ValueError(f"Unsupported file type: {p}")
 
 
-def main(input_dir: str, output: str, drop_duplicates: bool):
+def main(input_dir: str, output: str, drop_duplicates: bool, variant: str = "full"):
     inp = Path(input_dir)
     out = Path(output)
 
@@ -42,7 +68,7 @@ def main(input_dir: str, output: str, drop_duplicates: bool):
         logging.error("Input directory not found: %s", inp)
         return 1
 
-    files = find_monthly_files(inp)
+    files = find_monthly_files(inp, variant=variant)
     if not files:
         logging.warning("No monthly municipio files found in %s", inp)
         return 0
@@ -87,6 +113,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Concatenate monthly municipio outputs into Indicador_comunicacao.csv")
     parser.add_argument("--input-dir", default="data/trusted/municipio_daily", help="Directory with municipio_YYYY-MM.* files")
     parser.add_argument("--output", default="data/trusted/Indicador_comunicacao.csv", help="Output CSV path")
+    parser.add_argument("--variant", choices=["simple", "full"], default="full", help="Pipeline variant to concatenate")
     parser.add_argument("--drop-duplicates", action="store_true", help="Drop duplicate rows across source files")
     args = parser.parse_args()
-    raise SystemExit(main(args.input_dir, args.output, args.drop_duplicates))
+    raise SystemExit(main(args.input_dir, args.output, args.drop_duplicates, args.variant))

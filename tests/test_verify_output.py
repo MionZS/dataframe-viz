@@ -1,7 +1,6 @@
 """Tests for verify_output module."""
 
 import tempfile
-from datetime import datetime
 from pathlib import Path
 
 import polars as pl
@@ -129,15 +128,15 @@ def test_verify_output_parquet_format(valid_output_fixture):
         Path(parquet_path).unlink(missing_ok=True)
 
 
-def test_verify_output_disp_all_binary():
-    """Test verification checks DISP is binary."""
+def test_verify_output_disp_ratio_within_unit_interval():
+    """Test verification accepts DISP ratios within [0,1]."""
     df = pl.DataFrame(
         {
             "MUNICIPIO": ["A"],
             "INTELIGENTE": ["Hexing"],
             "CONTAGEM_COMM": [850],
             "CONTAGEM_TOT": [1000],
-            "DISP": [0.85],  # Not binary
+            "DISP": [0.85],
             "DATA": ["2026-03-07"],
         }
     )
@@ -148,6 +147,32 @@ def test_verify_output_disp_all_binary():
 
     try:
         is_valid, report = verify_output_integrity(temp_path)
-        assert not report["disp_all_binary"]
+        assert is_valid
+        assert report["disp_in_unit_interval"]
+    finally:
+        Path(temp_path).unlink(missing_ok=True)
+
+
+def test_verify_output_disp_out_of_range():
+    """Test verification fails when DISP goes outside [0,1]."""
+    df = pl.DataFrame(
+        {
+            "MUNICIPIO": ["A"],
+            "INTELIGENTE": ["Hexing"],
+            "CONTAGEM_COMM": [1200],
+            "CONTAGEM_TOT": [1000],
+            "DISP": [1.2],
+            "DATA": ["2026-03-07"],
+        }
+    )
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+        df.write_csv(f.name)
+        temp_path = f.name
+
+    try:
+        is_valid, report = verify_output_integrity(temp_path)
+        assert not is_valid
+        assert not report["disp_in_unit_interval"]
     finally:
         Path(temp_path).unlink(missing_ok=True)

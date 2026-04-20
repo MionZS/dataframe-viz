@@ -8,11 +8,12 @@ import logging
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import yaml
 
-from src.month_checker import get_months_to_compute, print_plan
+from src.month_checker import print_plan
+from src.source_retrieval import retrieve_and_refresh_diario
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ def concatenate_outputs(output_dir: str = "data/trusted/municipio_daily", pipeli
             input_dir=output_dir,
             output=str(output_file),
             drop_duplicates=False,
+            variant=pipeline_name,
         )
         
         if result == 0:
@@ -125,6 +127,10 @@ def verify_output(output_file: str) -> bool:
     try:
         from src.verify_output import verify_output_integrity, print_verification_report
 
+        if not Path(output_file).exists():
+            logger.warning("Output file not found: %s", output_file)
+            return False
+
         is_valid, report = verify_output_integrity(output_file)
         print_verification_report(report)
         return is_valid
@@ -138,7 +144,8 @@ def run_daily_orchestrator(
     config_path: str = "config/pipeline.yaml",
     diario_dir: str = "D:/Projects/visualizer-tuis/data/raw/CIS/Diario",
     output_dir: str = "data/trusted/municipio_daily",
-    pipelines: List[str] = None,
+    pipelines: Optional[List[str]] = None,
+    source_zip_dir: str = "D:/dados/OneDrive - copel.com/BIs Projetos Especiais - Documentos/General/Comunicação MIs/Fontes",
 ) -> Dict[str, bool]:
     """Run full daily orchestration workflow.
 
@@ -161,18 +168,36 @@ def run_daily_orchestrator(
     if pipelines is None:
         pipelines = ["simple", "full"]
 
+    pipelines = [p for p in pipelines if p in {"simple", "full"}]
+    active = set(pipelines)
+
     status = {
-        "simple": False,
-        "full": False,
+        "retrieve": False,
+        "simple": "simple" not in active,
+        "full": "full" not in active,
         "concat": False,
-        "verify": False,
+        "verify": True,
     }
 
-    # Step 1: Analyze availability
+    # Step 0: Retrieve newest ZIP and refresh Diario
     logger.info("=" * 70)
     logger.info("DAILY ORCHESTRATOR START")
     logger.info("=" * 70)
 
+    project_root = str(Path(__file__).resolve().parent.parent)
+    retrieve_ok, retrieve_details = retrieve_and_refresh_diario(
+        source_dir=source_zip_dir,
+        project_root=project_root,
+        diario_dir=diario_dir,
+    )
+    status["retrieve"] = retrieve_ok
+
+    if not retrieve_ok:
+        logger.warning("Data retrieval check failed: %s", retrieve_details.get("message", "unknown"))
+        logger.warning("Stopping before pipeline execution.")
+        return status
+
+    # Step 1: Analyze availability
     plan = print_plan(diario_dir, output_dir)
 
     # Step 2: Run computations for missing months
@@ -190,7 +215,6 @@ def run_daily_orchestrator(
             len(months_to_compute),
         )
 
-        pipeline_name = "pipeline_orchestrator_simple" if pipeline == "simple" else "pipeline_orchestrator"
         all_ok = True
 
         for month in months_to_compute:
@@ -210,7 +234,7 @@ def run_daily_orchestrator(
         else:
             concat_results[pipeline] = False
 
-    status["concat"] = any(concat_results.values())
+    status["concat"] = all(concat_results.get(p, False) for p in pipelines)
 
     # Step 4: Verify final outputs
     for pipeline in pipelines:
@@ -228,8 +252,15 @@ def run_daily_orchestrator(
     logger.info("=" * 70)
     logger.info("DAILY ORCHESTRATOR SUMMARY")
     logger.info("=" * 70)
-    logger.info("  Simple pipeline:  %s", "✓" if status["simple"] else "✗")
-    logger.info("  Full pipeline:    %s", "✓" if status["full"] else "✗")
+    logger.info("  Source retrieval: %s", "✓" if status["retrieve"] else "✗")
+    logger.info(
+        "  Simple pipeline:  %s",
+        "✓" if status["simple"] else ("-" if "simple" not in active else "✗"),
+    )
+    logger.info(
+        "  Full pipeline:    %s",
+        "✓" if status["full"] else ("-" if "full" not in active else "✗"),
+    )
     logger.info("  Concatenation:    %s", "✓" if status["concat"] else "✗")
     logger.info("  Verification:     %s", "✓" if status["verify"] else "✗")
     
@@ -256,9 +287,14 @@ if __name__ == "__main__":
     config_path = sys.argv[1] if len(sys.argv) > 1 else "config/pipeline.yaml"
     diario_dir = sys.argv[2] if len(sys.argv) > 2 else "D:/Projects/visualizer-tuis/data/raw/CIS/Diario"
     output_dir = sys.argv[3] if len(sys.argv) > 3 else "data/trusted/municipio_daily"
-    pipelines = sys.argv[4].split(",") if len(sys.argv) > 4 else ["simple", "full"]
+    pipelines = [p.strip() for p in sys.argv[4].split(",")] if len(sys.argv) > 4 else ["simple", "full"]
+    source_zip_dir = (
+        sys.argv[5]
+        if len(sys.argv) > 5
+        else "D:/dados/OneDrive - copel.com/BIs Projetos Especiais - Documentos/General/Comunicação MIs/Fontes"
+    )
 
-    status = run_daily_orchestrator(config_path, diario_dir, output_dir, pipelines)
+    status = run_daily_orchestrator(config_path, diario_dir, output_dir, pipelines, source_zip_dir)
 
     # Exit 0 if all OK, 1 if any failed
     all_ok = all(status.values())

@@ -2,14 +2,14 @@
 
 import logging
 from pathlib import Path
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Tuple
 
 import polars as pl
 
 logger = logging.getLogger(__name__)
 
 
-def verify_output_integrity(output_path: str) -> Tuple[bool, Dict[str, any]]:
+def verify_output_integrity(output_path: str) -> Tuple[bool, Dict[str, Any]]:
     """Verify the integrity of a pipeline output file (CSV or Parquet).
 
     Parameters
@@ -31,7 +31,7 @@ def verify_output_integrity(output_path: str) -> Tuple[bool, Dict[str, any]]:
         "missing_columns": [],
         "column_types": {},
         "disp_range": None,
-        "disp_all_binary": False,
+        "disp_in_unit_interval": False,
         "null_counts": {},
         "has_duplicates": False,
         "errors": [],
@@ -84,7 +84,7 @@ def verify_output_integrity(output_path: str) -> Tuple[bool, Dict[str, any]]:
     # Column types
     report["column_types"] = {col: str(dtype) for col, dtype in zip(df.columns, df.dtypes)}
 
-    # Check DISP column (should be 0 or 1 only)
+    # Check DISP column (aggregated ratio should be in [0,1])
     if "DISP" in df.columns:
         try:
             disp_col = df.select("DISP")
@@ -92,16 +92,11 @@ def verify_output_integrity(output_path: str) -> Tuple[bool, Dict[str, any]]:
             disp_max = disp_col.select(pl.col("DISP").max()).item()
             report["disp_range"] = (float(disp_min), float(disp_max))
 
-            unique_disps = disp_col.unique().height
-            report["disp_all_binary"] = (
-                unique_disps <= 2
-                and disp_min >= 0.0
-                and disp_max <= 1.0
-            )
+            report["disp_in_unit_interval"] = disp_min >= 0.0 and disp_max <= 1.0
 
-            if not report["disp_all_binary"]:
+            if not report["disp_in_unit_interval"]:
                 report["errors"].append(
-                    f"DISP column has unexpected range: {disp_min}–{disp_max}"
+                    f"DISP column out of expected range [0,1]: {disp_min}–{disp_max}"
                 )
         except Exception as exc:
             report["errors"].append(f"Failed to check DISP column: {exc}")
@@ -150,38 +145,38 @@ def print_verification_report(report: Dict) -> None:
     if report["missing_columns"]:
         print(f"\n✗ Missing columns: {report['missing_columns']}")
     else:
-        print(f"\n✓ All expected columns present")
+        print("\n✓ All expected columns present")
 
     if report["column_types"]:
-        print(f"\nColumn types:")
+        print("\nColumn types:")
         for col, dtype in report["column_types"].items():
             print(f"  {col:20} → {dtype}")
 
     if report["disp_range"]:
         print(f"\n✓ DISP range: {report['disp_range'][0]:.4f}–{report['disp_range'][1]:.4f}")
-        if report["disp_all_binary"]:
-            print(f"  ✓ All values are binary (0 or 1)")
+        if report["disp_in_unit_interval"]:
+            print("  ✓ All values are within [0,1]")
         else:
-            print(f"  ✗ Non-binary values detected")
+            print("  ✗ Values outside [0,1] detected")
 
     if report["null_counts"]:
-        print(f"\n✗ Null values found:")
+        print("\n✗ Null values found:")
         for col, count in report["null_counts"].items():
             print(f"  {col}: {count:,}")
     else:
-        print(f"\n✓ No null values")
+        print("\n✓ No null values")
 
     if report["has_duplicates"]:
-        print(f"\n✗ Duplicate rows detected by [MUNICIPIO, INTELIGENTE, DATA]")
+        print("\n✗ Duplicate rows detected by [MUNICIPIO, INTELIGENTE, DATA]")
     else:
-        print(f"\n✓ No duplicates")
+        print("\n✓ No duplicates")
 
     if report["errors"]:
         print(f"\n✗ VALIDATION FAILED with {len(report['errors'])} error(s):")
         for i, err in enumerate(report["errors"], 1):
             print(f"  {i}. {err}")
     else:
-        print(f"\n✓ VALIDATION PASSED — output file is OK")
+        print("\n✓ VALIDATION PASSED — output file is OK")
 
     print("=" * 70 + "\n")
 

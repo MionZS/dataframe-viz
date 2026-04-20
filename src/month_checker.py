@@ -8,11 +8,9 @@ Can be run daily to incrementally compute months as data becomes available.
 """
 
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set
-
-import polars as pl
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -104,21 +102,20 @@ def get_computed_months(output_dir: str, pipeline_name: str) -> List[str]:
         return []
 
     computed = set()
-    suffix = f"_1day.csv" if pipeline_name == "simple" else ".csv"
-    pattern = f"municipio_*{suffix}*"
+    if pipeline_name == "simple":
+        pattern = re.compile(r"^municipio_(\d{4}-\d{2})_1day\.(csv|parquet)$", re.IGNORECASE)
+    else:
+        pattern = re.compile(r"^municipio_(\d{4}-\d{2})\.(csv|parquet)$", re.IGNORECASE)
 
-    for file in output_path.glob(pattern):
+    for file in output_path.iterdir():
         try:
-            # Extract month from filename: municipio_YYYY-MM_1day.csv
-            parts = file.stem.split("_")
-            if len(parts) >= 2:
-                year_month = parts[1]
-                if len(year_month) == 7 and year_month[4] == "-":  # "2026-03" format
-                    computed.add(year_month)
+            m = pattern.match(file.name)
+            if m:
+                computed.add(m.group(1))
         except Exception as exc:
             logger.warning("Failed to parse file %s: %s", file, exc)
 
-    return sorted(list(computed))
+    return sorted(computed)
 
 
 def get_months_to_compute(
@@ -146,7 +143,7 @@ def get_months_to_compute(
     available = get_available_months(diario_dir)
     computed = get_computed_months(output_dir, pipeline_name)
 
-    to_compute = sorted(list(set(available) - set(computed)))
+    to_compute = sorted(set(available) - set(computed))
 
     logger.info(
         "Pipeline %s: available=%s, computed=%s, to_compute=%s",
@@ -179,7 +176,7 @@ def print_plan(
     print("=" * 70)
 
     available = get_available_months(diario_dir)
-    print(f"\nAvailable data (Diario):")
+    print("\nAvailable data (Diario):")
     print(f"  Months: {available}")
 
     for pipeline in ["simple", "full"]:
@@ -191,7 +188,7 @@ def print_plan(
         print(f"  To compute: {to_compute}")
 
         if not to_compute:
-            print(f"  Status: ✓ All available months are up-to-date")
+            print("  Status: ✓ All available months are up-to-date")
         else:
             print(f"  Status: Need to compute {len(to_compute)} month(s)")
 

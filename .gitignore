@@ -28,3 +28,6 @@ data/
 data/trusted/municipio_daily/
 data/trusted/municipio_daily/*.csv
 data/trusted/municipio_daily/*.parquet
+
+# Local staging area for source ZIP retrieval
+incoming_data/

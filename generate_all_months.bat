@@ -24,7 +24,7 @@ echo ============================================================
 echo.
 
 REM Run daily orchestrator with full pipeline only
-python -m src.daily_orchestrator config/pipeline.yaml "D:/Projects/visualizer-tuis/data/raw/CIS/Diario" data/trusted/municipio_daily "full"
+python -m src.daily_orchestrator config/pipeline.yaml "D:/Projects/visualizer-tuis/data/raw/CIS/Diario" data/trusted/municipio_daily "full" "D:/dados/OneDrive - copel.com/BIs Projetos Especiais - Documentos/General/Comunicação MIs/Fontes"
 
 if %ERRORLEVEL% EQU 0 (
     echo.

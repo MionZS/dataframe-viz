@@ -16,7 +16,7 @@ echo ============================================================
 echo.
 
 REM Run daily orchestrator with simple pipeline only
-python -m src.daily_orchestrator config/pipeline.yaml "D:/Projects/visualizer-tuis/data/raw/CIS/Diario" data/trusted/municipio_daily "simple"
+python -m src.daily_orchestrator config/pipeline.yaml "D:/Projects/visualizer-tuis/data/raw/CIS/Diario" data/trusted/municipio_daily "simple" "D:/dados/OneDrive - copel.com/BIs Projetos Especiais - Documentos/General/Comunicação MIs/Fontes"
 
 echo.
 echo Done! Output: data/trusted/Indicador_comunicacao_simple.csv
