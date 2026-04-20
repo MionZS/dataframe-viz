@@ -1,4 +1,4 @@
-"""Simplified pipeline orchestrator — Phase 1 + 3 only (no moving window).
+"""Simplified pipeline orchestrator — Phase 1 + 3 only (single-day lookback, no moving window).
 
 Reads config/pipeline.yaml and executes two phases:
 
@@ -8,7 +8,8 @@ Reads config/pipeline.yaml and executes two phases:
 
     Phase 3 — Join & Aggregate  (final deliverable)
         For each day:
-          - Compute DISP directly from enriched ORCA + SANPLAT files
+          - Extract DISP from the previous day column (target_date - 1) only
+          - No moving window; direct single-day lookback
           - Merge ORCA+SANPLAT DISP by NIO
           - Left-join once with Diario (MUNICIPIO)
           - Inner-join with MEDIDORES (smart brands only)
@@ -17,7 +18,7 @@ Reads config/pipeline.yaml and executes two phases:
           - Stream-sink into a single output file
         Output: municipio_daily/municipio_YYYY-MM.csv (.parquet)
 
-This skips Phase 2 (moving window intermediates) by computing DISP on-demand.
+This uses single-day (yesterday) lookback instead of 5-day moving window.
 """
 
 import logging
@@ -31,10 +32,10 @@ from typing import Any, Dict, List, Optional, Tuple
 import polars as pl
 import yaml
 
+from src.daily_disp import compute_disp_single_day
 from src.enrich_dates import process_orca, process_sanplat
 from src.join_daily import join_with_diario, join_with_medidores
 from src.memory_monitor import MemoryMonitor
-from src.moving_window import compute_disp
 from src.sink_manager import SinkManager
 
 logger = logging.getLogger(__name__)
@@ -202,41 +203,35 @@ def _compute_combined_disp(
     target_date: datetime,
     orca_enriched: Optional[str],
     sanplat_enriched: Optional[str],
-    window_days: int,
-    orca_binarize: bool,
 ) -> pl.DataFrame:
-    """Compute DISP from both ORCA and SANPLAT, then merge by NIO.
+    """Extract DISP from both ORCA and SANPLAT (single-day lookback), then merge by NIO.
 
     Returns a DataFrame with [NIO, DISP] (combined from both sources).
     """
     orca_disp = pl.DataFrame({"NIO": [], "DISP": []})
     sanplat_disp = pl.DataFrame({"NIO": [], "DISP": []})
 
-    # Compute ORCA DISP
+    # Extract ORCA DISP from previous day column
     if orca_enriched and Path(orca_enriched).exists():
         try:
-            orca_disp = compute_disp(
+            orca_disp = compute_disp_single_day(
                 enriched_path=orca_enriched,
                 target_date=target_date,
-                window_days=window_days,
-                binarize=orca_binarize,
             )
-            logger.info("ORCA DISP computed: %d rows", orca_disp.height)
+            logger.info("ORCA DISP extracted: %d rows", orca_disp.height)
         except Exception as exc:
-            logger.error("ORCA DISP computation failed: %s", exc)
+            logger.error("ORCA DISP extraction failed: %s", exc)
 
-    # Compute SANPLAT DISP
+    # Extract SANPLAT DISP from previous day column
     if sanplat_enriched and Path(sanplat_enriched).exists():
         try:
-            sanplat_disp = compute_disp(
+            sanplat_disp = compute_disp_single_day(
                 enriched_path=sanplat_enriched,
                 target_date=target_date,
-                window_days=window_days,
-                binarize=False,
             )
-            logger.info("SANPLAT DISP computed: %d rows", sanplat_disp.height)
+            logger.info("SANPLAT DISP extracted: %d rows", sanplat_disp.height)
         except Exception as exc:
-            logger.error("SANPLAT DISP computation failed: %s", exc)
+            logger.error("SANPLAT DISP extraction failed: %s", exc)
 
     # Merge: take union, then unique by NIO (safety for overlap)
     if not orca_disp.is_empty() and not sanplat_disp.is_empty():
@@ -272,16 +267,11 @@ def _process_date(
     logger.info("Processing date: %s", date_str)
     memory.log_status(f"start {date_str}")
 
-    # Compute DISP on-demand from enriched files
-    window_days: int = cfg.get("moving_window_days", 5)
-    orca_binarize: bool = cfg.get("orca_binarize", True)
-
+    # Extract DISP from previous day only (no moving window)
     combined_disp = _compute_combined_disp(
         target_date=target_date,
         orca_enriched=str(orca_enriched_1day) if orca_enriched_1day else None,
         sanplat_enriched=str(sanplat_enriched_1day) if sanplat_enriched_1day else None,
-        window_days=window_days,
-        orca_binarize=orca_binarize,
     )
 
     if combined_disp.is_empty():
